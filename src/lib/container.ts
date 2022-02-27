@@ -1,3 +1,4 @@
+import { IProvider } from "./providers.interface";
 import { IRegistry } from "./registry.interface";
 
 class Container {
@@ -16,19 +17,19 @@ class Container {
     return null;
   }
 
-  public init() {
-    this._registries.forEach((registry) => {
-      registry.providers.forEach((provider) => {
+  public async init() {
+    for (const registry of this._registries) {
+      for (const provider of registry.providers) {
         if (provider.dependencies.length === 0) {
-          this._instances[provider.key] = provider.factory();
+          this._instances[provider.key] = await provider.factory();
         } else {
           const dependencies = provider.dependencies.map((dependencyKey) =>
             this.get(dependencyKey)
           );
-          this._instances[provider.key] = provider.factory(...dependencies);
+          this._instances[provider.key] = await provider.factory(...dependencies);
         }
-      });
-    });
+      }
+    }
   }
 }
 

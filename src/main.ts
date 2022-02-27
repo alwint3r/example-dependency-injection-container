@@ -4,20 +4,21 @@ import devicesRegistry from "./app/devices/devices.registry";
 import persistenceRegistry from "./app/persistence/persistence.registry";
 import Container from "./lib/container";
 
-const container = new Container([
-  persistenceRegistry,
-  devicesRegistry,
-]);
+const container = new Container([persistenceRegistry, devicesRegistry]);
 
-container.init();
+async function main() {
+  await container.init();
 
-const deviceService = container.get<DeviceService>("DEVICE_SERVICE");
+  const deviceService = container.get<DeviceService>(DeviceService.name);
 
-if (!deviceService) {
-  throw new Error("Device service not found");
+  if (!deviceService) {
+    throw new Error("Device service not found");
+  }
+
+  deviceService.insert(new DeviceEntity("123", "device-1"));
+
+  const storedDevice = deviceService.getById("123");
+  console.log(storedDevice);
 }
 
-deviceService.insert(new DeviceEntity('123', 'device-1'));
-
-const storedDevice = deviceService.getById('123');
-console.log(storedDevice);
+main();

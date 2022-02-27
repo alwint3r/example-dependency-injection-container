@@ -23,7 +23,7 @@ class DeviceService {
 export default DeviceService;
 
 export const deviceServiceProvider: IProvider = {
-  key: 'DEVICE_SERVICE',
+  key: DeviceService.name,
   dependencies: ['IN_MEMORY_PERSISTENCE'],
   factory: (persistence: IPersistence) => new DeviceService(persistence),
 };
